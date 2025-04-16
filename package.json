@@ -1,0 +1,41 @@
+{
+  "name": "anime-web-app",
+  "version": "1.0.0",
+  "description": "Anime Search Application",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^5.3.4"
+  },
+  "devDependencies": {
+    "parcel": "^2.9.3",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16",
+    "tailwindcss": "^3.3.5"
+  },
+  "private": true,
+  "test": "react-scripts test",
+  "eject": "react-scripts eject",
+  "@types/react": "^17.0.0",
+  "@types/react-dom": "^17.0.0",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
