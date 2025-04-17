@@ -1,19 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [animeList, setAnimeList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [contentType, setContentType] = useState('anime'); // Default to anime
+  const [wishlist, setWishlist] = useState([]);
 
-  const searchAnime = async (query) => {
+  useEffect(() => {
+    // Load wishlist from localStorage
+    const loadWishlist = () => {
+      const storedWishlist = localStorage.getItem('wishlist');
+      if (storedWishlist) {
+        setWishlist(JSON.parse(storedWishlist));
+      }
+    };
+
+    loadWishlist();
+  }, []);
+
+  const addToWishlist = (item) => {
+    // Check if item is already in wishlist
+    if (wishlist.some(wishlistItem => wishlistItem.mal_id === item.mal_id)) {
+      return;
+    }
+
+    const updatedWishlist = [...wishlist, item];
+    setWishlist(updatedWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+  };
+
+  const removeFromWishlist = (id) => {
+    const updatedWishlist = wishlist.filter(item => item.mal_id !== id);
+    setWishlist(updatedWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(updatedWishlist));
+  };
+
+  const isInWishlist = (id) => {
+    return wishlist.some(item => item.mal_id === id);
+  };
+
+  const convertRatingToStars = (rating) => {
+    if (!rating) return 0;
+    // Convert 10-point scale to 5-point scale
+    return (rating / 2);
+  };
+
+  const renderStars = (rating) => {
+    const stars = convertRatingToStars(rating);
+    const starElements = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.floor(stars)) {
+        // Full star
+        starElements.push(
+          <svg key={`star-${i}`} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        );
+      } else if (i - 0.5 <= stars) {
+        // Half star
+        starElements.push(
+          <svg key={`star-${i}`} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <defs>
+              <linearGradient id="half-gradient">
+                <stop offset="50%" stopColor="currentColor" />
+                <stop offset="50%" stopColor="#D1D5DB" />
+              </linearGradient>
+            </defs>
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" fill="url(#half-gradient)" />
+          </svg>
+        );
+      } else {
+        // Empty star
+        starElements.push(
+          <svg key={`star-${i}`} className="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        );
+      }
+    }
+    return starElements;
+  };
+
+  const searchContent = async (query) => {
     if (!query) return;
     
     setLoading(true);
     setError(null);
     
     try {
-      const response = await fetch(`https://api.jikan.moe/v4/anime?q=${query}&sfw`);
+      const endpoint = contentType === 'anime' 
+        ? `https://api.jikan.moe/v4/anime?q=${query}&sfw`
+        : `https://api.jikan.moe/v4/manga?q=${query}&sfw`;
+      
+      const response = await fetch(endpoint);
       const data = await response.json();
       
       if (data.data) {
@@ -22,22 +105,91 @@ function SearchPage() {
         setAnimeList([]);
       }
     } catch (err) {
-      setError('Failed to fetch anime data');
+      setError(`Failed to fetch ${contentType} data`);
       setAnimeList([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Load popular content when the component mounts or content type changes
+  useEffect(() => {
+    const fetchPopularContent = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const endpoint = contentType === 'anime' 
+          ? 'https://api.jikan.moe/v4/top/anime'
+          : 'https://api.jikan.moe/v4/top/manga';
+        
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        
+        if (data.data) {
+          setAnimeList(data.data);
+        } else {
+          setAnimeList([]);
+        }
+      } catch (err) {
+        setError(`Failed to fetch popular ${contentType}`);
+        setAnimeList([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPopularContent();
+  }, [contentType]);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    searchAnime(searchTerm);
+    searchContent(searchTerm);
+  };
+
+  const handleContentTypeChange = (e) => {
+    setContentType(e.target.value);
+    setSearchTerm(''); // Clear search term when switching content type
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Anime Search</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-center text-gray-800">
+            {contentType === 'anime' ? 'Anime' : 'Manga'} Search
+          </h1>
+          <Link to="/wishlist" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+            My Wishlist ({wishlist.length})
+          </Link>
+        </div>
+        
+        <div className="mb-6 flex justify-center">
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            <button
+              type="button"
+              onClick={() => setContentType('anime')}
+              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                contentType === 'anime'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Anime
+            </button>
+            <button
+              type="button"
+              onClick={() => setContentType('manga')}
+              className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+                contentType === 'manga'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Manga
+            </button>
+          </div>
+        </div>
         
         <form onSubmit={handleSearch} className="mb-8">
           <div className="flex gap-2">
@@ -45,7 +197,7 @@ function SearchPage() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search for anime..."
+              placeholder={`Search for ${contentType}...`}
               className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
@@ -66,19 +218,56 @@ function SearchPage() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {animeList.map((anime) => (
-            <div key={anime.mal_id} className="bg-white rounded-lg shadow-md overflow-hidden">
+          {animeList.map((item) => (
+            <div key={item.mal_id} className="bg-white rounded-lg shadow-md overflow-hidden">
               <img
-                src={anime.images.jpg.large_image_url}
-                alt={anime.title}
+                src={item.images.jpg.large_image_url}
+                alt={item.title}
                 className="w-full h-48 object-cover"
               />
               <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{anime.title}</h2>
-                <p className="text-gray-600 text-sm mb-2">
-                  Score: {anime.score} • Episodes: {anime.episodes}
-                </p>
-                <p className="text-gray-700 text-sm line-clamp-3">{anime.synopsis}</p>
+                <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+                <div className="flex flex-col space-y-1 text-sm text-gray-600">
+                  <div className="flex items-center">
+                    <span className="font-medium mr-1">Rating:</span>
+                    <div className="flex items-center">
+                      {item.score ? (
+                        <div className="flex">
+                          {renderStars(item.score)}
+                          <span className="ml-2 text-sm">({item.score.toFixed(1)})</span>
+                        </div>
+                      ) : (
+                        <span>N/A</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-medium mr-1">Type:</span>
+                    <span>{item.type || 'N/A'}</span>
+                  </div>
+                  {contentType === 'anime' ? (
+                    <div className="flex items-center">
+                      <span className="font-medium mr-1">Episodes:</span>
+                      <span>{item.episodes || 'N/A'}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <span className="font-medium mr-1">Chapters:</span>
+                      <span>{item.chapters || 'N/A'}</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-gray-700 text-sm mt-3 line-clamp-3">{item.synopsis}</p>
+                <button
+                  onClick={() => isInWishlist(item.mal_id) ? removeFromWishlist(item.mal_id) : addToWishlist(item)}
+                  className={`mt-4 w-full px-4 py-2 rounded-lg ${
+                    isInWishlist(item.mal_id)
+                      ? 'bg-red-500 hover:bg-red-600 text-white'
+                      : 'bg-blue-500 hover:bg-blue-600 text-white'
+                  }`}
+                >
+                  {isInWishlist(item.mal_id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                </button>
               </div>
             </div>
           ))}

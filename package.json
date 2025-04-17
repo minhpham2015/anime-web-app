@@ -2,40 +2,35 @@
   "name": "anime-web-app",
   "version": "1.0.0",
   "description": "Anime Search Application",
-  "main": "index.js",
+  "source": "index.html",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-router-dom": "^5.3.4"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.10.0"
   },
   "devDependencies": {
-    "parcel": "^2.9.3",
-    "postcss": "^8.4.31",
-    "autoprefixer": "^10.4.16",
-    "tailwindcss": "^3.3.5"
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "@babel/preset-react": "^7.18.6",
+    "autoprefixer": "^10.4.14",
+    "parcel": "^2.8.3",
+    "postcss": "^8.4.21",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.3.1"
   },
   "private": true,
   "test": "react-scripts test",
   "eject": "react-scripts eject",
   "@types/react": "^17.0.0",
   "@types/react-dom": "^17.0.0",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "browserslist": [
+    "last 2 versions"
+  ]
 }

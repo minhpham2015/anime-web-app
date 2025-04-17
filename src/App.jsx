@@ -1,17 +1,19 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './components/HomePage';
 import SearchPage from './components/SearchPage';
+import WishlistPage from './components/WishlistPage';
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/search" component={SearchPage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
+      </Routes>
     </div>
   );
 }

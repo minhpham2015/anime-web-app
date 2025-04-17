@@ -8,7 +8,7 @@ function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold">
-              Anime Explorer
+              Anime/Manga Explorer
             </Link>
           </div>
           <div className="flex space-x-4">
