@@ -1,8 +1,12 @@
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
-  darkMode: 'media',
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+      },
+    },
   },
   variants: {
     extend: {},

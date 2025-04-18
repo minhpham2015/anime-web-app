@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 function SearchPage() {
@@ -8,6 +8,83 @@ function SearchPage() {
   const [error, setError] = useState(null);
   const [contentType, setContentType] = useState('anime'); // Default to anime
   const [wishlist, setWishlist] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  
+  // Filter states
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedRating, setSelectedRating] = useState('');
+  
+  // Filter options
+  const typeOptions = [
+    { value: '', label: 'All Types' },
+    { value: 'tv', label: 'TV' },
+    { value: 'movie', label: 'Movie' },
+    { value: 'ova', label: 'OVA' },
+    { value: 'ona', label: 'ONA' },
+    { value: 'special', label: 'Special' },
+    { value: 'manga', label: 'Manga' },
+    { value: 'novel', label: 'Novel' },
+    { value: 'one-shot', label: 'One-shot' },
+    { value: 'doujin', label: 'Doujin' },
+    { value: 'manhwa', label: 'Manhwa' },
+    { value: 'manhua', label: 'Manhua' }
+  ];
+  
+  const statusOptions = [
+    { value: '', label: 'All Status' },
+    { value: 'airing', label: 'Airing' },
+    { value: 'complete', label: 'Completed' },
+    { value: 'upcoming', label: 'Upcoming' },
+    { value: 'finished', label: 'Finished' },
+    { value: 'publishing', label: 'Publishing' }
+  ];
+  
+  const genreOptions = [
+    { value: '', label: 'All Genres' },
+    { value: 'action', label: 'Action' },
+    { value: 'adventure', label: 'Adventure' },
+    { value: 'comedy', label: 'Comedy' },
+    { value: 'drama', label: 'Drama' },
+    { value: 'fantasy', label: 'Fantasy' },
+    { value: 'horror', label: 'Horror' },
+    { value: 'mystery', label: 'Mystery' },
+    { value: 'romance', label: 'Romance' },
+    { value: 'sci-fi', label: 'Sci-Fi' },
+    { value: 'slice-of-life', label: 'Slice of Life' },
+    { value: 'sports', label: 'Sports' },
+    { value: 'supernatural', label: 'Supernatural' },
+    { value: 'thriller', label: 'Thriller' }
+  ];
+  
+  const ratingOptions = [
+    { value: '', label: 'All Ratings' },
+    { value: 'g', label: 'G - All Ages' },
+    { value: 'pg', label: 'PG - Children' },
+    { value: 'pg13', label: 'PG-13 - Teens 13 or older' },
+    { value: 'r17', label: 'R - 17+ (violence & profanity)' },
+    { value: 'r', label: 'R+ - Mild Nudity' },
+    { value: 'rx', label: 'Rx - Hentai' }
+  ];
+  
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+  const observer = useRef();
+  const lastItemRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, isLoadingMore]);
 
   useEffect(() => {
     // Load wishlist from localStorage
@@ -20,6 +97,21 @@ function SearchPage() {
 
     loadWishlist();
   }, []);
+
+  useEffect(() => {
+    // Update dark mode class on document
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    // Save preference to localStorage
+    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+  };
 
   const addToWishlist = (item) => {
     // Check if item is already in wishlist
@@ -85,30 +177,68 @@ function SearchPage() {
     return starElements;
   };
 
-  const searchContent = async (query) => {
-    if (!query) return;
+  const searchContent = async (query, pageNum = 1) => {
+    if (!query && pageNum === 1) return;
     
-    setLoading(true);
+    if (pageNum === 1) {
+      setLoading(true);
+    } else {
+      setIsLoadingMore(true);
+    }
     setError(null);
     
     try {
+      // Build the filter parameters
+      let filterParams = `sfw&page=${pageNum}&limit=9`;
+      
+      if (selectedType) {
+        filterParams += `&type=${selectedType}`;
+      }
+      
+      if (selectedStatus) {
+        filterParams += `&status=${selectedStatus}`;
+      }
+      
+      if (selectedGenre) {
+        filterParams += `&genres=${selectedGenre}`;
+      }
+      
+      if (selectedRating) {
+        filterParams += `&rating=${selectedRating}`;
+      }
+      
       const endpoint = contentType === 'anime' 
-        ? `https://api.jikan.moe/v4/anime?q=${query}&sfw`
-        : `https://api.jikan.moe/v4/manga?q=${query}&sfw`;
+        ? `https://api.jikan.moe/v4/anime?q=${query}&${filterParams}`
+        : `https://api.jikan.moe/v4/manga?q=${query}&${filterParams}`;
       
       const response = await fetch(endpoint);
       const data = await response.json();
       
       if (data.data) {
-        setAnimeList(data.data);
+        if (pageNum === 1) {
+          setAnimeList(data.data);
+        } else {
+          setAnimeList(prev => [...prev, ...data.data]);
+        }
+        setHasMore(data.pagination.has_next_page);
       } else {
-        setAnimeList([]);
+        if (pageNum === 1) {
+          setAnimeList([]);
+        }
+        setHasMore(false);
       }
     } catch (err) {
       setError(`Failed to fetch ${contentType} data`);
-      setAnimeList([]);
+      if (pageNum === 1) {
+        setAnimeList([]);
+      }
+      setHasMore(false);
     } finally {
-      setLoading(false);
+      if (pageNum === 1) {
+        setLoading(false);
+      } else {
+        setIsLoadingMore(false);
+      }
     }
   };
 
@@ -119,159 +249,310 @@ function SearchPage() {
       setError(null);
       
       try {
+        // Build the filter parameters for popular content
+        let filterParams = 'limit=9';
+        
+        if (selectedType) {
+          filterParams += `&type=${selectedType}`;
+        }
+        
+        if (selectedStatus) {
+          filterParams += `&status=${selectedStatus}`;
+        }
+        
+        if (selectedGenre) {
+          filterParams += `&genres=${selectedGenre}`;
+        }
+        
+        if (selectedRating) {
+          filterParams += `&rating=${selectedRating}`;
+        }
+        
         const endpoint = contentType === 'anime' 
-          ? 'https://api.jikan.moe/v4/top/anime'
-          : 'https://api.jikan.moe/v4/top/manga';
+          ? `https://api.jikan.moe/v4/top/anime?${filterParams}`
+          : `https://api.jikan.moe/v4/top/manga?${filterParams}`;
         
         const response = await fetch(endpoint);
         const data = await response.json();
         
         if (data.data) {
           setAnimeList(data.data);
+          setHasMore(data.pagination.has_next_page);
         } else {
           setAnimeList([]);
+          setHasMore(false);
         }
       } catch (err) {
         setError(`Failed to fetch popular ${contentType}`);
         setAnimeList([]);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPopularContent();
-  }, [contentType]);
+  }, [contentType, selectedType, selectedStatus, selectedGenre, selectedRating]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      setPage(1);
+      searchContent(searchTerm, 1);
+    }
+  }, [searchTerm, contentType, selectedType, selectedStatus, selectedGenre, selectedRating]);
+
+  useEffect(() => {
+    if (page > 1) {
+      searchContent(searchTerm, page);
+    }
+  }, [page]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    searchContent(searchTerm);
+    setPage(1);
+    searchContent(searchTerm, 1);
   };
 
   const handleContentTypeChange = (e) => {
     setContentType(e.target.value);
     setSearchTerm(''); // Clear search term when switching content type
+    setPage(1);
   };
 
+  const handleFilterChange = (e, setFilter) => {
+    setFilter(e.target.value);
+    setPage(1);
+  };
+
+  const hasActiveFilters = selectedType || selectedStatus || selectedGenre || selectedRating;
+
+  const clearAllFilters = () => {
+    setSelectedType('');
+    setSelectedStatus('');
+    setSelectedGenre('');
+    setSelectedRating('');
+    setPage(1);
+  };
+
+  const SkeletonItem = () => (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden animate-pulse">
+      <div className="w-full h-48 bg-gray-200 dark:bg-gray-700" />
+      <div className="p-4">
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
+        </div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mt-3" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 mt-2" />
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-full mt-4" />
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-center text-gray-800">
-            {contentType === 'anime' ? 'Anime' : 'Manga'} Search
-          </h1>
-          <Link to="/wishlist" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-            My Wishlist ({wishlist.length})
-          </Link>
-        </div>
-        
-        <div className="mb-6 flex justify-center">
-          <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button
-              type="button"
-              onClick={() => setContentType('anime')}
-              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                contentType === 'anime'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-6">Discover Anime & Manga</h1>
+          <div className="flex gap-4 items-center">
+            <select
+              value={contentType}
+              onChange={handleContentTypeChange}
+              className="w-1/4 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
             >
-              Anime
-            </button>
-            <button
-              type="button"
-              onClick={() => setContentType('manga')}
-              className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                contentType === 'manga'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              Manga
-            </button>
-          </div>
-        </div>
-        
-        <form onSubmit={handleSearch} className="mb-8">
-          <div className="flex gap-2">
+              <option value="anime">Anime</option>
+              <option value="manga">Manga</option>
+            </select>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={`Search for ${contentType}...`}
-              className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search for anime or manga..."
+              className="flex-1 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
             />
             <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={handleSearch}
+              className="px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2"
             >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
               Search
             </button>
           </div>
-        </form>
-
-        {loading && (
-          <div className="text-center text-gray-600">Loading...</div>
-        )}
+        </div>
+        
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Filters</h2>
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors duration-200 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Clear All
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <select
+              value={selectedType}
+              onChange={(e) => handleFilterChange(e, setSelectedType)}
+              className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+            >
+              {typeOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+            
+            <select
+              value={selectedStatus}
+              onChange={(e) => handleFilterChange(e, setSelectedStatus)}
+              className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+            >
+              {statusOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+            
+            <select
+              value={selectedGenre}
+              onChange={(e) => handleFilterChange(e, setSelectedGenre)}
+              className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+            >
+              {genreOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+            
+            <select
+              value={selectedRating}
+              onChange={(e) => handleFilterChange(e, setSelectedRating)}
+              className="p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+            >
+              {ratingOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
         {error && (
-          <div className="text-center text-red-500">{error}</div>
+          <div className="text-center text-red-500 dark:text-red-400 mb-4">{error}</div>
+        )}
+
+        {!loading && animeList.length === 0 && !error && (
+          <div className="text-center py-8">
+            <div className="text-2xl text-gray-600 dark:text-gray-400 mb-4">No results found</div>
+            <p className="text-gray-500 dark:text-gray-500">
+              Try adjusting your search or filters
+            </p>
+          </div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {animeList.map((item) => (
-            <div key={item.mal_id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
-                src={item.images.jpg.large_image_url}
-                alt={item.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
-                <div className="flex flex-col space-y-1 text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <span className="font-medium mr-1">Rating:</span>
-                    <div className="flex items-center">
-                      {item.score ? (
-                        <div className="flex">
-                          {renderStars(item.score)}
-                          <span className="ml-2 text-sm">({item.score.toFixed(1)})</span>
-                        </div>
-                      ) : (
-                        <span>N/A</span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-medium mr-1">Type:</span>
-                    <span>{item.type || 'N/A'}</span>
-                  </div>
-                  {contentType === 'anime' ? (
-                    <div className="flex items-center">
-                      <span className="font-medium mr-1">Episodes:</span>
-                      <span>{item.episodes || 'N/A'}</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center">
-                      <span className="font-medium mr-1">Chapters:</span>
-                      <span>{item.chapters || 'N/A'}</span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-gray-700 text-sm mt-3 line-clamp-3">{item.synopsis}</p>
+          {loading ? (
+            // Show skeleton loading for initial load
+            Array(9).fill(null).map((_, index) => (
+              <SkeletonItem key={`skeleton-${index}`} />
+            ))
+          ) : (
+            animeList.map((item, index) => (
+              <div
+                key={`${item.mal_id}-${index}`}
+                ref={index === animeList.length - 1 ? lastItemRef : null}
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200 relative"
+              >
                 <button
-                  onClick={() => isInWishlist(item.mal_id) ? removeFromWishlist(item.mal_id) : addToWishlist(item)}
-                  className={`mt-4 w-full px-4 py-2 rounded-lg ${
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isInWishlist(item.mal_id) ? removeFromWishlist(item.mal_id) : addToWishlist(item);
+                  }}
+                  className={`absolute top-2 right-2 p-2 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 transition-all duration-200 ${
                     isInWishlist(item.mal_id)
-                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-blue-500 hover:bg-blue-600 text-white'
+                      ? 'text-red-500 hover:text-red-400'
+                      : 'text-white hover:text-red-500'
                   }`}
                 >
-                  {isInWishlist(item.mal_id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                  <svg 
+                    className="w-5 h-5" 
+                    fill={isInWishlist(item.mal_id) ? "currentColor" : "none"} 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                    />
+                  </svg>
                 </button>
+                <Link to={`/detail/${item.mal_id}`} className="block">
+                  <img
+                    src={item.images.jpg.large_image_url}
+                    alt={item.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
+                      {item.title}
+                    </h2>
+                    <div className="flex flex-col space-y-1 text-sm text-gray-600 dark:text-gray-300">
+                      <div className="flex items-center">
+                        <span className="font-medium mr-1">Rating:</span>
+                        <div className="flex items-center">
+                          {item.score ? (
+                            <div className="flex">
+                              {renderStars(item.score)}
+                              <span className="ml-2 text-sm">({item.score.toFixed(1)})</span>
+                            </div>
+                          ) : (
+                            <span>N/A</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="font-medium mr-1">Type:</span>
+                        <span>{item.type || 'N/A'}</span>
+                      </div>
+                      {contentType === 'anime' ? (
+                        <div className="flex items-center">
+                          <span className="font-medium mr-1">Episodes:</span>
+                          <span>{item.episodes || 'N/A'}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center">
+                          <span className="font-medium mr-1">Chapters:</span>
+                          <span>{item.chapters || 'N/A'}</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300 text-sm mt-3 line-clamp-3">{item.synopsis}</p>
+                  </div>
+                </Link>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
+
+        {isLoadingMore && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {Array(3).fill(null).map((_, index) => (
+              <SkeletonItem key={`skeleton-more-${index}`} />
+            ))}
+          </div>
+        )}
+
+        {!hasMore && animeList.length > 0 && (
+          <div className="text-center text-gray-600 dark:text-gray-400 mt-4">No more items to load</div>
+        )}
       </div>
     </div>
   );
