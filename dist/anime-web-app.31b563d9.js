@@ -32337,8 +32337,9 @@ function Navbar() {
     _s();
     const [isDarkMode, setIsDarkMode] = (0, _reactDefault.default).useState(()=>{
         const savedMode = localStorage.getItem('darkMode');
-        return savedMode ? JSON.parse(savedMode) : false;
+        return savedMode ? JSON.parse(savedMode) : true;
     });
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = (0, _reactDefault.default).useState(false);
     (0, _reactDefault.default).useEffect(()=>{
         if (isDarkMode) document.documentElement.classList.add('dark');
         else document.documentElement.classList.remove('dark');
@@ -32349,13 +32350,129 @@ function Navbar() {
     const toggleDarkMode = ()=>{
         setIsDarkMode(!isDarkMode);
     };
+    const toggleMobileMenu = ()=>{
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("nav", {
         className: "bg-blue-500 p-4",
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: "max-w-4xl mx-auto flex justify-between items-center",
             children: [
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "flex space-x-4",
+                    className: "flex items-center",
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                            to: "/",
+                            className: "text-white text-xl font-bold",
+                            children: "AnimeApp"
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 33,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            onClick: toggleMobileMenu,
+                            className: "md:hidden ml-4 p-2 text-white hover:text-blue-200",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("svg", {
+                                className: "w-6 h-6",
+                                fill: "none",
+                                stroke: "currentColor",
+                                viewBox: "0 0 24 24",
+                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("path", {
+                                    strokeLinecap: "round",
+                                    strokeLinejoin: "round",
+                                    strokeWidth: 2,
+                                    d: "M4 6h16M4 12h16m-7 6h7"
+                                }, void 0, false, {
+                                    fileName: "src/components/Navbar.jsx",
+                                    lineNumber: 41,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "src/components/Navbar.jsx",
+                                lineNumber: 40,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 36,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/Navbar.jsx",
+                    lineNumber: 32,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: `md:hidden ${isMobileMenuOpen ? 'fixed inset-0 bg-blue-500 z-50 flex flex-col justify-center items-center' : 'hidden'}`,
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                            onClick: toggleMobileMenu,
+                            className: "absolute top-4 right-4 p-2 text-white hover:text-blue-200",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("svg", {
+                                className: "w-6 h-6",
+                                fill: "none",
+                                stroke: "currentColor",
+                                viewBox: "0 0 24 24",
+                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("path", {
+                                    strokeLinecap: "round",
+                                    strokeLinejoin: "round",
+                                    strokeWidth: 2,
+                                    d: "M6 18L18 6M6 6l12 12"
+                                }, void 0, false, {
+                                    fileName: "src/components/Navbar.jsx",
+                                    lineNumber: 51,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "src/components/Navbar.jsx",
+                                lineNumber: 50,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 46,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                            to: "/",
+                            className: "text-white hover:text-blue-200 px-3 py-2 rounded-md",
+                            onClick: toggleMobileMenu,
+                            children: "Home"
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 54,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                            to: "/search",
+                            className: "text-white hover:text-blue-200 px-3 py-2 rounded-md",
+                            onClick: toggleMobileMenu,
+                            children: "Search"
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 57,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                            to: "/wishlist",
+                            className: "text-white hover:text-blue-200 px-3 py-2 rounded-md",
+                            onClick: toggleMobileMenu,
+                            children: "Wishlist"
+                        }, void 0, false, {
+                            fileName: "src/components/Navbar.jsx",
+                            lineNumber: 60,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/components/Navbar.jsx",
+                    lineNumber: 45,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                    className: "hidden md:flex md:items-center space-x-4",
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
                             to: "/",
@@ -32363,7 +32480,7 @@ function Navbar() {
                             children: "Home"
                         }, void 0, false, {
                             fileName: "src/components/Navbar.jsx",
-                            lineNumber: 27,
+                            lineNumber: 65,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
@@ -32372,7 +32489,7 @@ function Navbar() {
                             children: "Search"
                         }, void 0, false, {
                             fileName: "src/components/Navbar.jsx",
-                            lineNumber: 30,
+                            lineNumber: 68,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
@@ -32381,19 +32498,19 @@ function Navbar() {
                             children: "Wishlist"
                         }, void 0, false, {
                             fileName: "src/components/Navbar.jsx",
-                            lineNumber: 33,
+                            lineNumber: 71,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/Navbar.jsx",
-                    lineNumber: 26,
+                    lineNumber: 64,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                     onClick: toggleDarkMode,
                     className: "text-white hover:text-blue-200 px-3 py-2 rounded-md flex items-center space-x-2",
-                    children: isDarkMode ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
+                    children: isMobileMenuOpen ? null : isDarkMode ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
                         children: [
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("svg", {
                                 className: "w-5 h-5",
@@ -32407,20 +32524,20 @@ function Navbar() {
                                     d: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
                                 }, void 0, false, {
                                     fileName: "src/components/Navbar.jsx",
-                                    lineNumber: 44,
-                                    columnNumber: 17
+                                    lineNumber: 83,
+                                    columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "src/components/Navbar.jsx",
-                                lineNumber: 43,
-                                columnNumber: 15
+                                lineNumber: 82,
+                                columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                 children: "Light Mode"
                             }, void 0, false, {
                                 fileName: "src/components/Navbar.jsx",
-                                lineNumber: 46,
-                                columnNumber: 15
+                                lineNumber: 85,
+                                columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
@@ -32437,41 +32554,41 @@ function Navbar() {
                                     d: "M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                                 }, void 0, false, {
                                     fileName: "src/components/Navbar.jsx",
-                                    lineNumber: 51,
-                                    columnNumber: 17
+                                    lineNumber: 90,
+                                    columnNumber: 19
                                 }, this)
                             }, void 0, false, {
                                 fileName: "src/components/Navbar.jsx",
-                                lineNumber: 50,
-                                columnNumber: 15
+                                lineNumber: 89,
+                                columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                 children: "Dark Mode"
                             }, void 0, false, {
                                 fileName: "src/components/Navbar.jsx",
-                                lineNumber: 53,
-                                columnNumber: 15
+                                lineNumber: 92,
+                                columnNumber: 17
                             }, this)
                         ]
                     }, void 0, true)
                 }, void 0, false, {
                     fileName: "src/components/Navbar.jsx",
-                    lineNumber: 37,
+                    lineNumber: 75,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/Navbar.jsx",
-            lineNumber: 25,
+            lineNumber: 31,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "src/components/Navbar.jsx",
-        lineNumber: 24,
+        lineNumber: 30,
         columnNumber: 5
     }, this);
 }
-_s(Navbar, "TK5NhOoqwj/a26C0FUuOZLC8fCo=");
+_s(Navbar, "mQKYlG/ZRJuAYUBa2/VbbM2yKMA=");
 _c = Navbar;
 exports.default = Navbar;
 var _c;
@@ -35260,6 +35377,7 @@ function SearchPage() {
     const [hasMore, setHasMore] = (0, _react.useState)(true);
     const [isLoadingMore, setIsLoadingMore] = (0, _react.useState)(false);
     const [showFilters, setShowFilters] = (0, _react.useState)(false);
+    const [showMobileMenu, setShowMobileMenu] = (0, _react.useState)(false);
     // Filter states
     const [selectedType, setSelectedType] = (0, _react.useState)('');
     const [selectedStatus, setSelectedStatus] = (0, _react.useState)('');
@@ -35504,12 +35622,12 @@ function SearchPage() {
                     d: "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                 }, void 0, false, {
                     fileName: "src/components/SearchPage.jsx",
-                    lineNumber: 155,
+                    lineNumber: 156,
                     columnNumber: 13
                 }, this)
             }, `star-${i}`, false, {
                 fileName: "src/components/SearchPage.jsx",
-                lineNumber: 154,
+                lineNumber: 155,
                 columnNumber: 11
             }, this));
             else if (i - 0.5 <= stars) // Half star
@@ -35527,7 +35645,7 @@ function SearchPage() {
                                     stopColor: "currentColor"
                                 }, void 0, false, {
                                     fileName: "src/components/SearchPage.jsx",
-                                    lineNumber: 164,
+                                    lineNumber: 165,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("stop", {
@@ -35535,18 +35653,18 @@ function SearchPage() {
                                     stopColor: "#D1D5DB"
                                 }, void 0, false, {
                                     fileName: "src/components/SearchPage.jsx",
-                                    lineNumber: 165,
+                                    lineNumber: 166,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 163,
+                            lineNumber: 164,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 162,
+                        lineNumber: 163,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("path", {
@@ -35554,13 +35672,13 @@ function SearchPage() {
                         fill: "url(#half-gradient)"
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 168,
+                        lineNumber: 169,
                         columnNumber: 13
                     }, this)
                 ]
             }, `star-${i}`, true, {
                 fileName: "src/components/SearchPage.jsx",
-                lineNumber: 161,
+                lineNumber: 162,
                 columnNumber: 11
             }, this));
             else // Empty star
@@ -35572,12 +35690,12 @@ function SearchPage() {
                     d: "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                 }, void 0, false, {
                     fileName: "src/components/SearchPage.jsx",
-                    lineNumber: 175,
+                    lineNumber: 176,
                     columnNumber: 13
                 }, this)
             }, `star-${i}`, false, {
                 fileName: "src/components/SearchPage.jsx",
-                lineNumber: 174,
+                lineNumber: 175,
                 columnNumber: 11
             }, this));
         }
@@ -35703,7 +35821,7 @@ function SearchPage() {
                     className: "w-full h-48 bg-gray-200 dark:bg-gray-700"
                 }, void 0, false, {
                     fileName: "src/components/SearchPage.jsx",
-                    lineNumber: 342,
+                    lineNumber: 343,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35713,7 +35831,7 @@ function SearchPage() {
                             className: "h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"
                         }, void 0, false, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 344,
+                            lineNumber: 345,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35723,60 +35841,60 @@ function SearchPage() {
                                     className: "h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"
                                 }, void 0, false, {
                                     fileName: "src/components/SearchPage.jsx",
-                                    lineNumber: 346,
+                                    lineNumber: 347,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                     className: "h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"
                                 }, void 0, false, {
                                     fileName: "src/components/SearchPage.jsx",
-                                    lineNumber: 347,
+                                    lineNumber: 348,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                     className: "h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"
                                 }, void 0, false, {
                                     fileName: "src/components/SearchPage.jsx",
-                                    lineNumber: 348,
+                                    lineNumber: 349,
                                     columnNumber: 11
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 345,
+                            lineNumber: 346,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                             className: "h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mt-3"
                         }, void 0, false, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 350,
+                            lineNumber: 351,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                             className: "h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 mt-2"
                         }, void 0, false, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 351,
+                            lineNumber: 352,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                             className: "h-10 bg-gray-200 dark:bg-gray-700 rounded w-full mt-4"
                         }, void 0, false, {
                             fileName: "src/components/SearchPage.jsx",
-                            lineNumber: 352,
+                            lineNumber: 353,
                             columnNumber: 9
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/SearchPage.jsx",
-                    lineNumber: 343,
+                    lineNumber: 344,
                     columnNumber: 7
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/SearchPage.jsx",
-            lineNumber: 341,
+            lineNumber: 342,
             columnNumber: 5
         }, this);
     (0, _react.useEffect)(()=>{
@@ -35807,37 +35925,37 @@ function SearchPage() {
                                 children: "Discover Anime & Manga"
                             }, void 0, false, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 381,
+                                lineNumber: 382,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                                className: "flex gap-4 items-center",
+                                className: "flex flex-col md:flex-row gap-4 items-center",
                                 children: [
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
-                                        value: contentType,
-                                        onChange: handleContentTypeChange,
-                                        className: "w-1/4 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                                        className: "w-full md:w-auto flex justify-center items-center bg-gray-200 dark:bg-gray-700 rounded-lg p-1",
                                         children: [
-                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
-                                                value: "anime",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                                onClick: ()=>setContentType('anime'),
+                                                className: `px-4 py-2 rounded-lg transition-colors duration-200 ${contentType === 'anime' ? 'bg-blue-500 text-white' : 'text-gray-700 dark:text-gray-300'}`,
                                                 children: "Anime"
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 388,
+                                                lineNumber: 385,
                                                 columnNumber: 15
                                             }, this),
-                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("option", {
-                                                value: "manga",
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                                                onClick: ()=>setContentType('manga'),
+                                                className: `px-4 py-2 rounded-lg transition-colors duration-200 ${contentType === 'manga' ? 'bg-blue-500 text-white' : 'text-gray-700 dark:text-gray-300'}`,
                                                 children: "Manga"
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 389,
+                                                lineNumber: 393,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 383,
+                                        lineNumber: 384,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -35845,15 +35963,15 @@ function SearchPage() {
                                         value: searchTerm,
                                         onChange: (e)=>setSearchTerm(e.target.value),
                                         placeholder: "Search for anime or manga...",
-                                        className: "flex-1 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
+                                        className: "w-full md:w-auto flex-1 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white transition-all duration-200"
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 391,
+                                        lineNumber: 402,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                         onClick: handleSearch,
-                                        className: "px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2",
+                                        className: "w-full md:w-auto px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 flex items-center gap-2",
                                         children: [
                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("svg", {
                                                 className: "w-5 h-5",
@@ -35867,24 +35985,24 @@ function SearchPage() {
                                                     d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                                 }, void 0, false, {
                                                     fileName: "src/components/SearchPage.jsx",
-                                                    lineNumber: 403,
+                                                    lineNumber: 414,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 402,
+                                                lineNumber: 413,
                                                 columnNumber: 15
                                             }, this),
                                             "Search"
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 398,
+                                        lineNumber: 409,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                                         onClick: ()=>setShowFilters(!showFilters),
-                                        className: "p-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200",
+                                        className: "w-full md:w-auto p-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200",
                                         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("svg", {
                                             className: "w-6 h-6",
                                             fill: "none",
@@ -35897,29 +36015,29 @@ function SearchPage() {
                                                 d: "M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 412,
+                                                lineNumber: 423,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "src/components/SearchPage.jsx",
-                                            lineNumber: 411,
+                                            lineNumber: 422,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 407,
+                                        lineNumber: 418,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 382,
+                                lineNumber: 383,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 380,
+                        lineNumber: 381,
                         columnNumber: 9
                     }, this),
                     showFilters && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35933,7 +36051,7 @@ function SearchPage() {
                                         children: "Filters"
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 421,
+                                        lineNumber: 432,
                                         columnNumber: 15
                                     }, this),
                                     hasActiveFilters && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -35952,25 +36070,25 @@ function SearchPage() {
                                                     d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                                 }, void 0, false, {
                                                     fileName: "src/components/SearchPage.jsx",
-                                                    lineNumber: 428,
+                                                    lineNumber: 439,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 427,
+                                                lineNumber: 438,
                                                 columnNumber: 19
                                             }, this),
                                             "Clear All"
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 423,
+                                        lineNumber: 434,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 420,
+                                lineNumber: 431,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -35985,12 +36103,12 @@ function SearchPage() {
                                                 children: option.label
                                             }, option.value, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 441,
+                                                lineNumber: 452,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 435,
+                                        lineNumber: 446,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -36002,12 +36120,12 @@ function SearchPage() {
                                                 children: option.label
                                             }, option.value, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 451,
+                                                lineNumber: 462,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 445,
+                                        lineNumber: 456,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -36019,12 +36137,12 @@ function SearchPage() {
                                                 children: option.label
                                             }, option.value, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 461,
+                                                lineNumber: 472,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 455,
+                                        lineNumber: 466,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("select", {
@@ -36036,24 +36154,24 @@ function SearchPage() {
                                                 children: option.label
                                             }, option.value, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 471,
+                                                lineNumber: 482,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 465,
+                                        lineNumber: 476,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 434,
+                                lineNumber: 445,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 419,
+                        lineNumber: 430,
                         columnNumber: 11
                     }, this),
                     error && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36061,7 +36179,7 @@ function SearchPage() {
                         children: error
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 479,
+                        lineNumber: 490,
                         columnNumber: 11
                     }, this),
                     !loading && animeList.length === 0 && !error && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36072,7 +36190,7 @@ function SearchPage() {
                                 children: "No results found"
                             }, void 0, false, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 484,
+                                lineNumber: 495,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -36080,13 +36198,13 @@ function SearchPage() {
                                 children: "Try adjusting your search or filters"
                             }, void 0, false, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 485,
+                                lineNumber: 496,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 483,
+                        lineNumber: 494,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36094,7 +36212,7 @@ function SearchPage() {
                         children: loading ? // Show skeleton loading for initial load
                         Array(9).fill(null).map((_, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(SkeletonItem, {}, `skeleton-${index}`, false, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 495,
+                                lineNumber: 506,
                                 columnNumber: 15
                             }, this)) : animeList.map((item, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                 ref: index === animeList.length - 1 ? lastItemRef : null,
@@ -36119,17 +36237,17 @@ function SearchPage() {
                                                 d: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 522,
+                                                lineNumber: 533,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "src/components/SearchPage.jsx",
-                                            lineNumber: 516,
+                                            lineNumber: 527,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 504,
+                                        lineNumber: 515,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
@@ -36142,7 +36260,7 @@ function SearchPage() {
                                                 className: "w-full h-48 object-cover"
                                             }, void 0, false, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 531,
+                                                lineNumber: 542,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36153,7 +36271,7 @@ function SearchPage() {
                                                         children: item.title
                                                     }, void 0, false, {
                                                         fileName: "src/components/SearchPage.jsx",
-                                                        lineNumber: 537,
+                                                        lineNumber: 548,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36167,7 +36285,7 @@ function SearchPage() {
                                                                         children: "Rating:"
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 542,
+                                                                        lineNumber: 553,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36185,30 +36303,30 @@ function SearchPage() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "src/components/SearchPage.jsx",
-                                                                                    lineNumber: 547,
+                                                                                    lineNumber: 558,
                                                                                     columnNumber: 31
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "src/components/SearchPage.jsx",
-                                                                            lineNumber: 545,
+                                                                            lineNumber: 556,
                                                                             columnNumber: 29
                                                                         }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                                             children: "N/A"
                                                                         }, void 0, false, {
                                                                             fileName: "src/components/SearchPage.jsx",
-                                                                            lineNumber: 550,
+                                                                            lineNumber: 561,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 543,
+                                                                        lineNumber: 554,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/SearchPage.jsx",
-                                                                lineNumber: 541,
+                                                                lineNumber: 552,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36219,20 +36337,20 @@ function SearchPage() {
                                                                         children: "Type:"
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 555,
+                                                                        lineNumber: 566,
                                                                         columnNumber: 25
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                                         children: item.type || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 556,
+                                                                        lineNumber: 567,
                                                                         columnNumber: 25
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/SearchPage.jsx",
-                                                                lineNumber: 554,
+                                                                lineNumber: 565,
                                                                 columnNumber: 23
                                                             }, this),
                                                             contentType === 'anime' ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36243,20 +36361,20 @@ function SearchPage() {
                                                                         children: "Episodes:"
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 560,
+                                                                        lineNumber: 571,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                                         children: item.episodes || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 561,
+                                                                        lineNumber: 572,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/SearchPage.jsx",
-                                                                lineNumber: 559,
+                                                                lineNumber: 570,
                                                                 columnNumber: 25
                                                             }, this) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                                                                 className: "flex items-center",
@@ -36266,26 +36384,26 @@ function SearchPage() {
                                                                         children: "Chapters:"
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 565,
+                                                                        lineNumber: 576,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
                                                                         children: item.chapters || 'N/A'
                                                                     }, void 0, false, {
                                                                         fileName: "src/components/SearchPage.jsx",
-                                                                        lineNumber: 566,
+                                                                        lineNumber: 577,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "src/components/SearchPage.jsx",
-                                                                lineNumber: 564,
+                                                                lineNumber: 575,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "src/components/SearchPage.jsx",
-                                                        lineNumber: 540,
+                                                        lineNumber: 551,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -36293,42 +36411,42 @@ function SearchPage() {
                                                         children: item.synopsis
                                                     }, void 0, false, {
                                                         fileName: "src/components/SearchPage.jsx",
-                                                        lineNumber: 570,
+                                                        lineNumber: 581,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "src/components/SearchPage.jsx",
-                                                lineNumber: 536,
+                                                lineNumber: 547,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "src/components/SearchPage.jsx",
-                                        lineNumber: 530,
+                                        lineNumber: 541,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, `${item.mal_id}-${index}`, true, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 499,
+                                lineNumber: 510,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 491,
+                        lineNumber: 502,
                         columnNumber: 9
                     }, this),
                     isLoadingMore && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                         className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6",
                         children: Array(3).fill(null).map((_, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(SkeletonItem, {}, `skeleton-more-${index}`, false, {
                                 fileName: "src/components/SearchPage.jsx",
-                                lineNumber: 581,
+                                lineNumber: 592,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 579,
+                        lineNumber: 590,
                         columnNumber: 11
                     }, this),
                     !hasMore && animeList.length > 0 && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -36336,13 +36454,13 @@ function SearchPage() {
                         children: "No more items to load"
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 587,
+                        lineNumber: 598,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "src/components/SearchPage.jsx",
-                lineNumber: 379,
+                lineNumber: 380,
                 columnNumber: 7
             }, this),
             showScrollButton && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -36360,27 +36478,27 @@ function SearchPage() {
                         d: "M5 15l7-7 7 7"
                     }, void 0, false, {
                         fileName: "src/components/SearchPage.jsx",
-                        lineNumber: 597,
+                        lineNumber: 608,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "src/components/SearchPage.jsx",
-                    lineNumber: 596,
+                    lineNumber: 607,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "src/components/SearchPage.jsx",
-                lineNumber: 592,
+                lineNumber: 603,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "src/components/SearchPage.jsx",
-        lineNumber: 378,
+        lineNumber: 379,
         columnNumber: 5
     }, this);
 }
-_s(SearchPage, "raXW+rUtqvGiD3X/nzyilcXy7Qc=");
+_s(SearchPage, "fMGXeCrU3BWVchmNytk+fOOVX84=");
 _c = SearchPage;
 exports.default = SearchPage;
 var _c;
